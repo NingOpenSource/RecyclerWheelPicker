@@ -14,8 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.gzleihou.oolagongyi.util.DensityUtil;
-
 public class RecyclerWheelPicker<T> extends RecyclerView {
     public RecyclerWheelPicker(Context context) {
         super(context);
