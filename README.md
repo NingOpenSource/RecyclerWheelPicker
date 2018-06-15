@@ -1,8 +1,8 @@
 # RecyclerWheelPicker
-基于recyclerview的滚轮选择器,支持自定义view,自定义滚动特效,自定义滚轮样式
+基于recyclerview的滚轮选择器,支持自定义view,自定义滚动特效,自定义滚轮样式,万条数据也不会卡顿,流畅滚动
 
 
-# 使用例子
+## 使用例子
 ```
 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
                             RecyclerWheelPicker<Integer> recyclerView = new RecyclerWheelPicker<>(getContext());
