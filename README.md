@@ -1,0 +1,2 @@
+# RecyclerWheelPicker
+基于recyclerview的滚轮选择器,支持自定义view,自定义滚动特效,自定义滚轮样式
