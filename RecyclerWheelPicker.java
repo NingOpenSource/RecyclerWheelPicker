@@ -81,7 +81,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     selectedPosition = index;
-                    adapter.onSelected2(viewHolder, getSelectedIndex(), getSelected());
+                    adapter.onWheelSelected(viewHolder, getSelectedIndex(), getSelected());
                 }
             });
             valueAnimator.start();
@@ -217,7 +217,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         if (viewHolder.getItemViewType() == WheelAdapter.VIEW_TYPE_HEADER || viewHolder.getItemViewType() == WheelAdapter.VIEW_TYPE_FOOTER) {
             return;
         }
-        adapter.onScrollTranslate2(viewHolder, progress);
+        adapter.onWheelScrollTranslate(viewHolder, progress);
     }
 
     /**
@@ -262,7 +262,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
 //                Log.e("onScrollStateChanged", "d=" + d);
             }
             if (adapter != null) {
-                adapter.onSelected2(getChildViewHolder(linearLayoutManager.findViewByPosition(selectedPosition)), getSelectedIndex(), getSelected());
+                adapter.onWheelSelected(getChildViewHolder(linearLayoutManager.findViewByPosition(selectedPosition)), getSelectedIndex(), getSelected());
             }
         } else {
         }
@@ -274,7 +274,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
     }
 
     public T getSelected() {
-        return adapter.getItemData2(getSelectedIndex());
+        return adapter.getWheelItemData(getSelectedIndex());
     }
 
     @Override
@@ -341,8 +341,8 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         private final int getDataPosition(int position) {
             if (position < itemHeadOrFootSize) {
                 return 0;
-            } else if (position >= getItemCount2()) {
-                return getItemCount2() - 1;
+            } else if (position >= getWheelItemCount()) {
+                return getWheelItemCount() - 1;
             } else {
                 return position - itemHeadOrFootSize;
             }
@@ -367,21 +367,21 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
             } else if (viewType == VIEW_TYPE_FOOTER) {
                 return new WheelViewHolder(new View(parent.getContext())).setItemLayoutParameter(itemHeight);
             }
-            return onCreateViewHolder2(parent).setItemLayoutParameter(itemHeight);
+            return onWheelCreateViewHolder(parent).setItemLayoutParameter(itemHeight);
         }
 
         /**
          * @param parent
          * @return
          */
-        abstract WheelViewHolder onCreateViewHolder2(@NonNull ViewGroup parent);
+        abstract WheelViewHolder onWheelCreateViewHolder(@NonNull ViewGroup parent);
 
         /**
          * @param holder
          * @param position
          * @param t
          */
-        abstract void onSelected2(ViewHolder holder, int position, T t);
+        abstract void onWheelSelected(ViewHolder holder, int position, T t);
 
         /**
          * item形变
@@ -389,7 +389,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
          * @param holder
          * @param progress 0~1
          */
-        abstract void onScrollTranslate2(ViewHolder holder, float progress);
+        abstract void onWheelScrollTranslate(ViewHolder holder, float progress);
 
         /**
          * {@hide}
@@ -405,10 +405,10 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
             if (position > getItemCount() - 1 - itemHeadOrFootSize) {
                 return VIEW_TYPE_FOOTER;
             }
-            return getItemViewType2(position - 1);
+            return getWheelItemViewType(position - 1);
         }
 
-        public int getItemViewType2(int position) {
+        public int getWheelItemViewType(int position) {
             return 0;
         }
 
@@ -422,13 +422,13 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         public final void onBindViewHolder(@NonNull WheelViewHolder viewHolder, int position) {
             if (getItemViewType(position) != VIEW_TYPE_FOOTER && getItemViewType(position) != VIEW_TYPE_HEADER) {
                 int vP = getDataPosition(position);
-                onBindViewHolder2(viewHolder, vP, getItemData2(vP));
+                onWheelBindViewHolder(viewHolder, vP, getWheelItemData(vP));
                 picker.refreshItemTranslate(viewHolder.itemView);
             }
         }
 
 
-        abstract void onBindViewHolder2(@NonNull WheelViewHolder holder, int position, T t);
+        abstract void onWheelBindViewHolder(@NonNull WheelViewHolder holder, int position, T t);
 
         /**
          * {@hide}
@@ -437,12 +437,12 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
          */
         @Override
         public final int getItemCount() {
-            return getItemCount2() + 1;
+            return getWheelItemCount() + 1;
         }
 
-        abstract T getItemData2(int position);
+        abstract T getWheelItemData(int position);
 
-        abstract int getItemCount2();
+        abstract int getWheelItemCount();
     }
 
     @Override
@@ -453,7 +453,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
 
     public static abstract class TextViewWheelAdapter<T> extends WheelAdapter<T> {
         @Override
-        WheelViewHolder onCreateViewHolder2(@NonNull ViewGroup parent) {
+        WheelViewHolder onWheelCreateViewHolder(@NonNull ViewGroup parent) {
             return new RecyclerWheelPicker.WheelViewHolder(new TextView(parent.getContext())) {
                 {
                     TextView textView = (TextView) itemView;
@@ -465,8 +465,8 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         }
 
         @Override
-        void onBindViewHolder2(@NonNull WheelViewHolder holder, int position, T t) {
-            ((TextView) holder.itemView).setText(getItemName(position, t));
+        void onWheelBindViewHolder(@NonNull WheelViewHolder holder, int position, T t) {
+            ((TextView) holder.itemView).setText(getWheelItemName(position, t));
             holder.itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -476,7 +476,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         }
 
         @Override
-        void onScrollTranslate2(ViewHolder holder, float progress) {
+        void onWheelScrollTranslate(ViewHolder holder, float progress) {
             TextView textView = ((TextView) holder.itemView);
             textView.setScaleY(Math.abs(progress) * 0.6f + 0.4f);
             textView.setScaleX(Math.abs(progress) * 0.6f + 0.4f);
@@ -489,6 +489,6 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
          * @param t
          * @return
          */
-        abstract String getItemName(int position, T t);
+        abstract String getWheelItemName(int position, T t);
     }
 }
