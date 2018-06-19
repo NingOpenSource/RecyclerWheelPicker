@@ -4,7 +4,7 @@
 
 ## 使用例子
 ```
-BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+                            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
                             RecyclerWheelPicker<Integer> recyclerView = new RecyclerWheelPicker<>(getContext());
                             recyclerView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, DensityUtil.dip2px(getContext(), 200)));
 //                            recyclerView.setSelectedTopAreaDrawer(new RecyclerWheelPicker.AreaDrawer() {//设置顶部样式
@@ -35,22 +35,22 @@ BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
                             recyclerView.setSelectedAreaHeight(100);
                             recyclerView.setAdapter(new RecyclerWheelPicker.TextViewWheelAdapter<Integer>() {
                                 @Override
-                                String getItemName(int position, Integer integer) {
+                                String getWheelItemName(int position, Integer integer) {
                                     return "name:"+(integer+1);
                                 }
 
                                 @Override
-                                void onSelected2(RecyclerView.ViewHolder holder, int position, Integer integer) {
-
+                                void onWheelSelected(RecyclerView.ViewHolder holder, int position, Integer integer) {
+                                    Log.e("onSelected2","value:"+integer);
                                 }
 
                                 @Override
-                                Integer getItemData2(int position) {
+                                Integer getWheelItemData(int position) {
                                     return position;
                                 }
 
                                 @Override
-                                int getItemCount2() {
+                                int getWheelItemCount() {
                                     return 999999;
                                 }
                             });
