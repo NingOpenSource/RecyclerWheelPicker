@@ -1,3 +1,7 @@
+
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,7 +16,10 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
 
 public class RecyclerWheelPicker<T> extends RecyclerView {
     public RecyclerWheelPicker(Context context) {
@@ -48,11 +55,36 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         }
     }
 
-    public void onClickItemView(View v){
-        ViewHolder viewHolder=getChildViewHolder(v);
-        if (viewHolder!=null){
-            int h=v.getTop()-adapter.itemHeadOrFootSize*selectedAreaHeight;
-            smoothScrollBy(0,h);
+    public void onClickItemView(final View v) {
+        final ViewHolder viewHolder = getChildViewHolder(v);
+        if (viewHolder != null) {
+            final int index = viewHolder.getAdapterPosition();
+            int h = selectedAreaHeight * adapter.itemHeadOrFootSize - v.getTop();
+            if (valueAnimator != null) {
+                valueAnimator.cancel();
+            }
+            valueAnimator = ValueAnimator.ofInt(v.getTop(), adapter.itemHeadOrFootSize * selectedAreaHeight);
+            if (selectedAreaHeight > Math.abs(h)) {
+                valueAnimator.setDuration(120);
+            } else {
+                valueAnimator.setDuration((long) (Math.abs(h) / Float.valueOf(selectedAreaHeight) * 90 + 30));
+            }
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    linearLayoutManager.scrollToPositionWithOffset(index, (int) animation.getAnimatedValue());
+                    refreshScrollTranslate();
+                }
+            });
+            valueAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    selectedPosition = index;
+                    adapter.onSelected2(viewHolder, getSelectedIndex(), getSelected());
+                }
+            });
+            valueAnimator.start();
         }
     }
 
@@ -94,6 +126,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
     }
 
     private LinearLayoutManager linearLayoutManager;
+    private State stateLayout;
     /**
      * 中间选择区域的高度,同时也是item高度
      */
@@ -158,9 +191,11 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         setLayoutManager(linearLayoutManager = new LinearLayoutManager(getContext()) {
             @Override
             public int scrollVerticallyBy(int dy, Recycler recycler, State state) {
-                Log.e("scrollVerticallyBy", "scroll:" +
-                        getChildViewHolder(findChildViewUnder(getMeasuredWidth() / 2, getMeasuredHeight() / 2)).getAdapterPosition());
-//                adapter.onScrollProgress2(getChildViewHolder(findViewByPosition()));
+//                if (dy==0) {
+//                    selectedPosition = getChildViewHolder(findChildViewUnder(getMeasuredWidth() / 2, getMeasuredHeight() / 2)).getAdapterPosition();
+//                    Log.e("scrollVerticallyBy", "scroll:" + dy + "***" +
+//                            selectedPosition);
+//                }
                 refreshScrollTranslate();
                 return super.scrollVerticallyBy(dy, recycler, state);
             }
@@ -168,9 +203,9 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
     }
 
     private void refreshItemTranslate(View v) {
-        int h = v.getTop() + selectedAreaHeight / 2;
-        int hd = getMeasuredHeight() / 2;
-        float progress = Math.abs((hd - h) / Float.valueOf(hd + selectedAreaHeight / 2));
+        int h = v.getTop() + selectedAreaHeight / 2;//选中view的中线
+        int hd = getMeasuredHeight() / 2;//选中区域的中线
+        float progress = Math.abs((hd - h) / Float.valueOf(hd + selectedAreaHeight / 2));//需要滚动的距离
         if (progress > 0) {
             progress = 1 - progress;
         } else {
@@ -199,26 +234,37 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         super.onMeasure(widthSpec, MeasureSpec.makeMeasureSpec(selectedAreaHeight * maxShowSize, MeasureSpec.getMode(heightSpec)));
     }
 
-    private T selectedData;
     private int selectedPosition = 0;
 
-
-    private int calculateSelectedPosition() {
-        float r = computeVerticalScrollOffset() / Float.valueOf(selectedAreaHeight);
-        selectedPosition = Math.round(r);
-        selectedData = adapter.getItemData2(getSelectedIndex());
-        return selectedPosition;
-    }
+    private ValueAnimator valueAnimator;
 
     @Override
     public void onScrollStateChanged(int state) {
-        calculateSelectedPosition();
+        if (valueAnimator != null) {
+            valueAnimator.cancel();
+        }
         if (state == 0) {
-            int d = selectedPosition * selectedAreaHeight - computeVerticalScrollOffset();
-            smoothScrollBy(0, d);
+            selectedPosition = getChildViewHolder(findChildViewUnder(getMeasuredWidth() / 2, getMeasuredHeight() / 2)).getAdapterPosition();
+            int d = (selectedPosition - adapter.itemHeadOrFootSize) * selectedAreaHeight - computeVerticalScrollOffset();
+            if (d != 0) {
+                valueAnimator = ValueAnimator.ofInt(d, 0);
+                valueAnimator.setDuration(100);
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    int i = selectedPosition - adapter.itemHeadOrFootSize;
+
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        linearLayoutManager.scrollToPositionWithOffset(i, (int) animation.getAnimatedValue());
+//                        Log.e("onScrollStateChanged", "d2=" + (int) animation.getAnimatedValue());
+                    }
+                });
+                valueAnimator.start();
+//                Log.e("onScrollStateChanged", "d=" + d);
+            }
             if (adapter != null) {
                 adapter.onSelected2(getChildViewHolder(linearLayoutManager.findViewByPosition(selectedPosition)), getSelectedIndex(), getSelected());
             }
+        } else {
         }
         super.onScrollStateChanged(state);
     }
