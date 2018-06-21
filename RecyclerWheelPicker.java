@@ -12,14 +12,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
 
 public class RecyclerWheelPicker<T> extends RecyclerView {
     public RecyclerWheelPicker(Context context) {
@@ -52,6 +48,11 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         if (adapter != null) {
             adapter.setPicker(this, selectedAreaHeight, maxShowSize);
             adapter.notifyDataSetChanged();
+        }
+        if (getLayoutParams() == null) {
+            setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, maxShowSize * selectedAreaHeight));
+        } else {
+            getLayoutParams().height = maxShowSize * selectedAreaHeight;
         }
     }
 
@@ -148,6 +149,11 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
             adapter.setPicker(this, selectedAreaHeight, maxShowSize);
             adapter.notifyDataSetChanged();
         }
+        if (getLayoutParams() == null) {
+            setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, maxShowSize * selectedAreaHeight));
+        } else {
+            getLayoutParams().height = maxShowSize * selectedAreaHeight;
+        }
     }
 
     /**
@@ -238,6 +244,16 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
 
     private ValueAnimator valueAnimator;
 
+    public void setDefaultValue(T t) {
+        int index = adapter.getPositionByValue(t);
+        if (index < 0) {
+            return;
+        }
+        linearLayoutManager.scrollToPositionWithOffset(index, 0);
+        selectedPosition=index+adapter.itemHeadOrFootSize;
+        refreshScrollTranslate();
+    }
+
     @Override
     public void onScrollStateChanged(int state) {
         if (valueAnimator != null) {
@@ -321,6 +337,8 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         private int itemHeight = 120;
         private int itemHeadOrFootSize = 2;
         private RecyclerWheelPicker<T> picker;
+
+        abstract int getPositionByValue(T t);
 
         /**
          * @param itemHeight
