@@ -1,4 +1,5 @@
 
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -16,6 +17,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 
 public class RecyclerWheelPicker<T> extends RecyclerView {
     public RecyclerWheelPicker(Context context) {
@@ -159,7 +161,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
     /**
      * 默认的
      */
-    public static AreaDrawer DEFAULT_SELECTED_AREA_DRAWER = new AreaDrawer() {
+    public AreaDrawer DEFAULT_SELECTED_AREA_DRAWER = new AreaDrawer() {
         @Override
         public void onDraw(Context context, Canvas canvas, Rect rect) {
             if (paint == null) {
@@ -455,7 +457,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
          */
         @Override
         public final int getItemCount() {
-            return getWheelItemCount() + 1;
+            return getWheelItemCount() + 1 + itemHeadOrFootSize;
         }
 
         protected abstract T getWheelItemData(int position);
