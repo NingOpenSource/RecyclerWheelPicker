@@ -457,7 +457,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
          */
         @Override
         public final int getItemCount() {
-            return getWheelItemCount() + 1 + itemHeadOrFootSize;
+            return getWheelItemCount() + itemHeadOrFootSize*2;
         }
 
         protected abstract T getWheelItemData(int position);
