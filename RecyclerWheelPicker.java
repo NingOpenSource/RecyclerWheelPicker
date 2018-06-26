@@ -250,7 +250,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
             return;
         }
         linearLayoutManager.scrollToPositionWithOffset(index, 0);
-        selectedPosition=index+adapter.itemHeadOrFootSize;
+        selectedPosition = index + adapter.itemHeadOrFootSize;
         refreshScrollTranslate();
     }
 
@@ -338,7 +338,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         private int itemHeadOrFootSize = 2;
         private RecyclerWheelPicker<T> picker;
 
-        abstract int getPositionByValue(T t);
+        protected abstract int getPositionByValue(T t);
 
         /**
          * @param itemHeight
@@ -392,14 +392,14 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
          * @param parent
          * @return
          */
-        abstract WheelViewHolder onWheelCreateViewHolder(@NonNull ViewGroup parent);
+        protected abstract WheelViewHolder onWheelCreateViewHolder(@NonNull ViewGroup parent);
 
         /**
          * @param holder
          * @param position
          * @param t
          */
-        abstract void onWheelSelected(ViewHolder holder, int position, T t);
+        protected abstract void onWheelSelected(ViewHolder holder, int position, T t);
 
         /**
          * item形变
@@ -407,7 +407,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
          * @param holder
          * @param progress 0~1
          */
-        abstract void onWheelScrollTranslate(ViewHolder holder, float progress);
+        protected abstract void onWheelScrollTranslate(ViewHolder holder, float progress);
 
         /**
          * {@hide}
@@ -446,7 +446,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         }
 
 
-        abstract void onWheelBindViewHolder(@NonNull WheelViewHolder holder, int position, T t);
+        protected abstract void onWheelBindViewHolder(@NonNull WheelViewHolder holder, int position, T t);
 
         /**
          * {@hide}
@@ -458,9 +458,9 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
             return getWheelItemCount() + 1;
         }
 
-        abstract T getWheelItemData(int position);
+        protected abstract T getWheelItemData(int position);
 
-        abstract int getWheelItemCount();
+        protected abstract int getWheelItemCount();
     }
 
     @Override
@@ -471,7 +471,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
 
     public static abstract class TextViewWheelAdapter<T> extends WheelAdapter<T> {
         @Override
-        WheelViewHolder onWheelCreateViewHolder(@NonNull ViewGroup parent) {
+        protected WheelViewHolder onWheelCreateViewHolder(@NonNull ViewGroup parent) {
             return new RecyclerWheelPicker.WheelViewHolder(new TextView(parent.getContext())) {
                 {
                     TextView textView = (TextView) itemView;
@@ -483,7 +483,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         }
 
         @Override
-        void onWheelBindViewHolder(@NonNull WheelViewHolder holder, int position, T t) {
+        protected void onWheelBindViewHolder(@NonNull WheelViewHolder holder, int position, T t) {
             ((TextView) holder.itemView).setText(getWheelItemName(position, t));
             holder.itemView.setOnClickListener(new OnClickListener() {
                 @Override
@@ -494,7 +494,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         }
 
         @Override
-        void onWheelScrollTranslate(ViewHolder holder, float progress) {
+        protected void onWheelScrollTranslate(ViewHolder holder, float progress) {
             TextView textView = ((TextView) holder.itemView);
             textView.setScaleY(Math.abs(progress) * 0.6f + 0.4f);
             textView.setScaleX(Math.abs(progress) * 0.6f + 0.4f);
@@ -507,6 +507,6 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
          * @param t
          * @return
          */
-        abstract String getWheelItemName(int position, T t);
+        protected abstract String getWheelItemName(int position, T t);
     }
 }
