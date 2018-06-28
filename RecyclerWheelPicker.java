@@ -1,5 +1,4 @@
 
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -16,8 +15,8 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
 
 public class RecyclerWheelPicker<T> extends RecyclerView {
     public RecyclerWheelPicker(Context context) {
@@ -211,8 +210,9 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
     }
 
     private void refreshItemTranslate(View v) {
+        v.getLayoutParams().width = mWidth;
         int h = v.getTop() + selectedAreaHeight / 2;//选中view的中线
-        int hd = getMeasuredHeight() / 2;//选中区域的中线
+        int hd = selectedAreaHeight * maxShowSize / 2;//选中区域的中线
         float progress = Math.abs((hd - h) / Float.valueOf(hd + selectedAreaHeight / 2));//需要滚动的距离
         if (progress > 0) {
             progress = 1 - progress;
@@ -237,9 +237,13 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         }
     }
 
+    private int mWidth;
+    private int mHeight;
+
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
-        super.onMeasure(widthSpec, MeasureSpec.makeMeasureSpec(selectedAreaHeight * maxShowSize, MeasureSpec.getMode(heightSpec)));
+        mWidth = MeasureSpec.getSize(widthSpec);
+        super.onMeasure(widthSpec, MeasureSpec.makeMeasureSpec(mHeight = selectedAreaHeight * maxShowSize, MeasureSpec.getMode(heightSpec)));
     }
 
     private int selectedPosition = 0;
@@ -262,25 +266,28 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
             valueAnimator.cancel();
         }
         if (state == 0) {
-            selectedPosition = getChildViewHolder(findChildViewUnder(getMeasuredWidth() / 2, getMeasuredHeight() / 2)).getAdapterPosition();
-            int d = (selectedPosition - adapter.itemHeadOrFootSize) * selectedAreaHeight - computeVerticalScrollOffset();
-            if (d != 0) {
-                valueAnimator = ValueAnimator.ofInt(d, 0);
-                valueAnimator.setDuration(100);
-                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    int i = selectedPosition - adapter.itemHeadOrFootSize;
+            View v = findChildViewUnder(getMeasuredWidth() / 2, getMeasuredHeight() / 2);
+            if (v != null) {
+                selectedPosition = getChildViewHolder(v).getAdapterPosition();
+                int d = (selectedPosition - adapter.itemHeadOrFootSize) * selectedAreaHeight - computeVerticalScrollOffset();
+                if (d != 0) {
+                    valueAnimator = ValueAnimator.ofInt(d, 0);
+                    valueAnimator.setDuration(100);
+                    valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        int i = selectedPosition - adapter.itemHeadOrFootSize;
 
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        linearLayoutManager.scrollToPositionWithOffset(i, (int) animation.getAnimatedValue());
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            linearLayoutManager.scrollToPositionWithOffset(i, (int) animation.getAnimatedValue());
 //                        Log.e("onScrollStateChanged", "d2=" + (int) animation.getAnimatedValue());
-                    }
-                });
-                valueAnimator.start();
+                        }
+                    });
+                    valueAnimator.start();
 //                Log.e("onScrollStateChanged", "d=" + d);
-            }
-            if (adapter != null) {
-                adapter.onWheelSelected(getChildViewHolder(linearLayoutManager.findViewByPosition(selectedPosition)), getSelectedIndex(), getSelected());
+                }
+                if (adapter != null) {
+                    adapter.onWheelSelected(getChildViewHolder(linearLayoutManager.findViewByPosition(selectedPosition)), getSelectedIndex(), getSelected());
+                }
             }
         } else {
         }
@@ -299,11 +306,11 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
         Rect top = new Rect(0, 0,
-                getMeasuredWidth(), getMeasuredHeight() / 2 - selectedAreaHeight / 2);
+                mWidth, mHeight / 2 - selectedAreaHeight / 2);
         Rect center = new Rect(0, top.bottom,
-                getMeasuredWidth(), getMeasuredHeight() / 2 + selectedAreaHeight / 2);
+                mWidth, mHeight / 2 + selectedAreaHeight / 2);
         Rect bottom = new Rect(0, center.bottom,
-                getMeasuredWidth(), getMeasuredHeight());
+                mWidth, mHeight);
         if (selectedTopAreaDrawer != null) {
             selectedTopAreaDrawer.onDraw(getContext(), canvas, top);
         }
@@ -339,6 +346,10 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         private int itemHeight = 120;
         private int itemHeadOrFootSize = 2;
         private RecyclerWheelPicker<T> picker;
+
+        protected int getItemHeight() {
+            return itemHeight;
+        }
 
         protected abstract int getPositionByValue(T t);
 
@@ -457,7 +468,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
          */
         @Override
         public final int getItemCount() {
-            return getWheelItemCount() + itemHeadOrFootSize*2;
+            return getWheelItemCount() + itemHeadOrFootSize * 2;
         }
 
         protected abstract T getWheelItemData(int position);
@@ -472,21 +483,33 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
     }
 
     public static abstract class TextViewWheelAdapter<T> extends WheelAdapter<T> {
+        private static final int textId = 0x3467;
+
+        public static int getTextId() {
+            return textId;
+        }
+
         @Override
         protected WheelViewHolder onWheelCreateViewHolder(@NonNull ViewGroup parent) {
-            return new RecyclerWheelPicker.WheelViewHolder(new TextView(parent.getContext())) {
-                {
-                    TextView textView = (TextView) itemView;
-                    textView.setGravity(Gravity.CENTER);
-                    textView.setTextColor(Color.argb(255, 90, 90, 90));
-                    textView.setPadding(20, 20, 20, 20);
-                }
+            LinearLayout linearLayout = new LinearLayout(parent.getContext());
+            linearLayout.setGravity(Gravity.CENTER);
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout.setLayoutParams(new RecyclerView.LayoutParams(getPicker().mWidth, getItemHeight()));
+            TextView textView = new TextView(parent.getContext());
+            textView.setGravity(Gravity.CENTER);
+            textView.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+            textView.setTextColor(Color.argb(255, 90, 90, 90));
+            textView.setPadding(20, 20, 20, 20);
+            textView.setId(textId);
+            linearLayout.addView(textView);
+            return new RecyclerWheelPicker.WheelViewHolder(linearLayout) {
             };
         }
 
         @Override
         protected void onWheelBindViewHolder(@NonNull WheelViewHolder holder, int position, T t) {
-            ((TextView) holder.itemView).setText(getWheelItemName(position, t));
+            TextView textView = holder.itemView.findViewById(textId);
+            textView.setText(getWheelItemName(position, t));
             holder.itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -497,7 +520,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
 
         @Override
         protected void onWheelScrollTranslate(ViewHolder holder, float progress) {
-            TextView textView = ((TextView) holder.itemView);
+            TextView textView = holder.itemView.findViewById(textId);
             textView.setScaleY(Math.abs(progress) * 0.6f + 0.4f);
             textView.setScaleX(Math.abs(progress) * 0.6f + 0.4f);
             textView.setTextColor(Color.argb((int) (120 + 125 * Math.abs(progress)), 90, 90, 90));
