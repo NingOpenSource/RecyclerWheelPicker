@@ -1,4 +1,5 @@
 
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 
 public class RecyclerWheelPicker<T> extends RecyclerView {
     public RecyclerWheelPicker(Context context) {
@@ -364,7 +366,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         }
 
         /**
-         * 获取真实的position
+         * 获取数据的真实position
          *
          * @param position
          * @return
@@ -372,7 +374,7 @@ public class RecyclerWheelPicker<T> extends RecyclerView {
         private final int getDataPosition(int position) {
             if (position < itemHeadOrFootSize) {
                 return 0;
-            } else if (position >= getWheelItemCount()) {
+            } else if (position >= getWheelItemCount() + itemHeadOrFootSize) {
                 return getWheelItemCount() - 1;
             } else {
                 return position - itemHeadOrFootSize;
