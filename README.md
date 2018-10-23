@@ -40,3 +40,4 @@ RecyclerWheelPicker<String> picker = new RecyclerWheelPicker(this);
 ```
 
 ![avatar](doc/device-2018-10-23-110635.png)
+
