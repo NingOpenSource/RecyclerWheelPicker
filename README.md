@@ -1,4 +1,7 @@
 # RecyclerWheelPicker
+
+[![](https://jitpack.io/v/NingOpenSource/RecyclerWheelPicker.svg)](https://jitpack.io/#NingOpenSource/RecyclerWheelPicker)
+---
 基于recyclerview的滚轮选择器,支持自定义view,自定义滚动特效,自定义滚轮样式,万条数据也不会卡顿,流畅滚动
 
 
