@@ -26,11 +26,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toast=Toast.makeText(this,"",Toast.LENGTH_SHORT);
+        toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
     }
 
     private String selected1 = "text_0";
-Toast toast;
+    Toast toast;
+
     public void textPicker(View v) {
         RecyclerWheelPicker<String> picker = new RecyclerWheelPicker(this);
         picker.setMaxShowSize(7);

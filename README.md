@@ -3,58 +3,40 @@
 
 
 ## 使用例子
-```
-                            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
-                            RecyclerWheelPicker<Integer> recyclerView = new RecyclerWheelPicker<>(getContext());
-                            recyclerView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, DensityUtil.dip2px(getContext(), 200)));
-//                            recyclerView.setSelectedTopAreaDrawer(new RecyclerWheelPicker.AreaDrawer() {//设置顶部样式
-//                                Paint paint=new Paint();
-//                                {
-//                                    paint.setColor(Color.argb(180,0,255,200));
-//                                    paint.setAntiAlias(true);
-//                                    paint.setStrokeWidth(20);
-//                                }
-//                                @Override
-//                                public void onDraw(Context context, Canvas canvas, Rect rect) {
-//                                    canvas.drawRect(rect,paint);
-//                                }
-//                            });
-//                            recyclerView.setSelectedBottomAreaDrawer(new RecyclerWheelPicker.AreaDrawer() {//设置底部样式
-//                                Paint paint=new Paint();
-//                                {
-//                                    paint.setColor(Color.argb(180,255,0,200));
-//                                    paint.setAntiAlias(true);
-//                                    paint.setStrokeWidth(20);
-//                                }
-//                                @Override
-//                                public void onDraw(Context context, Canvas canvas, Rect rect) {
-//                                    canvas.drawRect(rect,paint);
-//                                }
-//                            });
-                            recyclerView.setMaxShowSize(5);
-                            recyclerView.setSelectedAreaHeight(100);
-                            recyclerView.setAdapter(new RecyclerWheelPicker.TextViewWheelAdapter<Integer>() {
-                                @Override
-                                String getWheelItemName(int position, Integer integer) {
-                                    return "name:"+(integer+1);
-                                }
+```java
+RecyclerWheelPicker<String> picker = new RecyclerWheelPicker(this);
+        picker.setMaxShowSize(7);
+        picker.setSelectedAreaHeight(100);
+        picker.setAdapter(new TextViewWheelAdapter<String>() {
+            @Override
+            protected String getWheelItemName(int position, String s) {
+                return s;
+            }
 
-                                @Override
-                                void onWheelSelected(RecyclerView.ViewHolder holder, int position, Integer integer) {
-                                    Log.e("onSelected2","value:"+integer);
-                                }
+            @Override
+            protected int getPositionByValue(String s) {
+                return Integer.valueOf(s.replace("text_", ""));
+            }
 
-                                @Override
-                                Integer getWheelItemData(int position) {
-                                    return position;
-                                }
+            @Override
+            protected void onWheelSelected(RecyclerView.ViewHolder holder, int position, String s) {
+                selected1 = s;
+            }
 
-                                @Override
-                                int getWheelItemCount() {
-                                    return 999999;
-                                }
-                            });
-                            bottomSheetDialog.setContentView(recyclerView);
-                            bottomSheetDialog.show();
+            @Override
+            protected String getWheelItemData(int position) {
+                return "text_" + position;
+            }
+
+            @Override
+            protected int getWheelItemCount() {
+                return 10000;
+            }
+        });
+        picker.setDefaultValue(selected1);
+        new AlertDialog.Builder(this)
+                .setView(picker).create().show();
 
 ```
+
+![avatar](doc/device-2018-10-23-110635.png)
