@@ -1,17 +1,13 @@
 package org.yanning.recyclerwheelpicker.demo;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.yanning.recyclerwheelpicker.RecyclerWheelPicker;
 import org.yanning.recyclerwheelpicker.TextViewWheelAdapter;
@@ -34,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void textPicker(View v) {
         RecyclerWheelPicker<String> picker = new RecyclerWheelPicker(this);
-        picker.setMaxShowSize(7);
+        picker.setMaxShowSize(7);picker.setOrientation(RecyclerWheelPicker.HORIZONTAL);
         picker.setSelectedAreaHeight(100);
         picker.setAdapter(new TextViewWheelAdapter<String>() {
             @Override

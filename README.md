@@ -1,8 +1,12 @@
 # RecyclerWheelPicker
 
 [![](https://jitpack.io/v/NingOpenSource/RecyclerWheelPicker.svg)](https://jitpack.io/#NingOpenSource/RecyclerWheelPicker)
----
+
+**v1.+版本已经将依赖改为AndroidX**
+
 基于recyclerview的滚轮选择器,支持自定义view,自定义滚动特效,自定义滚轮样式,万条数据也不会卡顿,流畅滚动
+
+**demo下载：**[app-debug.apk](doc/app-debug.apk)
 
 
 ## 使用例子

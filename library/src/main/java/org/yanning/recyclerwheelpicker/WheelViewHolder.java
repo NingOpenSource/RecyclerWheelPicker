@@ -1,8 +1,9 @@
 package org.yanning.recyclerwheelpicker;
 
-import android.support.annotation.ColorInt;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import androidx.annotation.ColorInt;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class WheelViewHolder extends RecyclerView.ViewHolder {
 

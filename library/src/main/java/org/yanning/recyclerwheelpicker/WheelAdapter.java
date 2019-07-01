@@ -1,9 +1,10 @@
 package org.yanning.recyclerwheelpicker;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * 基础的适配器，必须集成此类实现适配器
