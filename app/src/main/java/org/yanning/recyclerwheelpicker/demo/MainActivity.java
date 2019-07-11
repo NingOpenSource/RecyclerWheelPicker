@@ -2,12 +2,15 @@ package org.yanning.recyclerwheelpicker.demo;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import org.yanning.recyclerwheelpicker.RecyclerWheelPicker;
 import org.yanning.recyclerwheelpicker.TextViewWheelAdapter;
@@ -61,6 +64,64 @@ public class MainActivity extends AppCompatActivity {
         picker.setDefaultValue(selected1);
         new AlertDialog.Builder(this)
                 .setView(picker).create().show();
+    }
+
+    private RecyclerWheelPicker<String> createTextPickerSimple(){
+        RecyclerWheelPicker<String> picker = new RecyclerWheelPicker(this);
+        picker.setMaxShowSize(7);
+        picker.setOrientation(RecyclerWheelPicker.HORIZONTAL);
+        picker.setSelectedAreaHeight(100);
+        picker.setAdapter(new TextViewWheelAdapter<String>() {
+            @Override
+            protected String getWheelItemName(int position, String s) {
+                return s;
+            }
+
+            @Override
+            protected int getPositionByValue(String s) {
+                return Integer.valueOf(s.replace("text_", ""));
+            }
+
+            @Override
+            protected void onWheelSelected(RecyclerView.ViewHolder holder, int position, String s) {
+                selected1 = s;
+            }
+
+            @Override
+            protected String getWheelItemData(int position) {
+                return "text_" + position;
+            }
+
+            @Override
+            protected int getWheelItemCount() {
+                return 10000;
+            }
+        });
+        picker.setDefaultValue(selected1);
+        return picker;
+    }
+
+
+    public void textPicker_BottomSheet(View v) {
+        RecyclerWheelPicker<String> picker0=createTextPickerSimple();
+        RecyclerWheelPicker<String> picker1=createTextPickerSimple();
+        LinearLayout linearLayout=new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayout.addView(picker0,new LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.WRAP_CONTENT){
+            {
+                this.weight=1;
+            }
+        });
+        linearLayout.addView(picker1,new LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.WRAP_CONTENT){
+            {
+                this.weight=1;
+            }
+        });
+        BottomSheetDialog dialog=new BottomSheetDialog(this);
+        dialog.setContentView(linearLayout);
+        dialog.show();
+//        new AlertDialog.Builder(this)
+//                .setView(picker).create().show();
     }
 
     public void dateTimePicker(View v) {
