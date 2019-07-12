@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,6 +21,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="textPicker_BottomSheetDialog"
+            android:text="文本选择器(BottomSheetDialog)"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="textPicker_BottomSheetFragment"
+            android:text="文本选择器(BottomSheetDialogFragment)"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,6 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="imagePicker"
+            android:visibility="gone"
             android:text="图片选择器"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,6 +63,7 @@
             android:layout_height="wrap_content"
             android:onClick="emojiPicker"
             android:text="表情选择器"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -55,9 +73,12 @@
             android:layout_height="wrap_content"
             android:onClick="multiLayoutPicker"
             android:text="多布局选择器"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+
     </LinearLayout>
 
 

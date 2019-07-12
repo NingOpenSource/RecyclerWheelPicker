@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+
 /**
  * 基础的底层View，承载滚动选择的元素
  *
@@ -211,6 +212,7 @@ class RecyclerWheelPickerCoreView<T> extends RecyclerView {
 
     private final void init() {
         setLayoutManager(linearLayoutManager = new LinearLayoutManager(getContext()) {
+
             @Override
             public int scrollVerticallyBy(int dy, Recycler recycler, State state) {
 //                if (dy==0) {
