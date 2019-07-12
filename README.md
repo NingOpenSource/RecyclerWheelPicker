@@ -31,7 +31,7 @@ android-support:
 
 ## 使用例子
 
-[点击此处下载demo](doc/app-debug.apk)
+[点击此处下载demo](https://github.com/NingOpenSource/RecyclerWheelPicker/blob/android_support/doc/app-debug.apk?raw=true)
 
 ***1.0.1版本后新增`LinearLayoutX`和`FrameLayoutX`两个布局用以支持`BottomSheetDialog`和`BottomSheetDialogFragment`，避免出现滑动冲突***
 ```xml
