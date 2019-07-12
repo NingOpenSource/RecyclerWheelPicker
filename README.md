@@ -4,8 +4,47 @@
 ---
 基于recyclerview的滚轮选择器,支持自定义view,自定义滚动特效,自定义滚轮样式,万条数据也不会卡顿,流畅滚动
 
+## 集成
+```gradle
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+androidX:
+```gradle
+	dependencies {
+	        implementation 'com.github.NingOpenSource:RecyclerWheelPicker:1.0.1-support'
+	}
+```
+
+android-support:
+```gradle
+	dependencies {
+	        implementation 'com.github.NingOpenSource:RecyclerWheelPicker:1.0.1'
+	}
+```
+
 
 ## 使用例子
+
+[点击此处下载demo](doc/app-debug.apk)
+
+***1.0.1版本后新增`LinearLayoutX`和`FrameLayoutX`两个布局用以支持`BottomSheetDialog`和`BottomSheetDialogFragment`，避免出现滑动冲突***
+```xml
+    <org.yanning.recyclerwheelpicker.extra.LinearLayoutX
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <org.yanning.recyclerwheelpicker.RecyclerWheelPicker
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </org.yanning.recyclerwheelpicker.extra.LinearLayoutX>
+```
+
+
 ```java
 RecyclerWheelPicker<String> picker = new RecyclerWheelPicker(this);
         picker.setMaxShowSize(7);
