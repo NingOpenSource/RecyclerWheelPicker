@@ -1,25 +1,35 @@
 package org.yanning.recyclerwheelpicker.demo;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import org.yanning.recyclerwheelpicker.RecyclerWheelPicker;
 import org.yanning.recyclerwheelpicker.TextViewWheelAdapter;
+import org.yanning.recyclerwheelpicker.extra.LinearLayoutX;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
+    {
+//        BottomSheetBehavior.
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void textPicker(View v) {
         RecyclerWheelPicker<String> picker = new RecyclerWheelPicker(this);
-        picker.setMaxShowSize(7);picker.setOrientation(RecyclerWheelPicker.HORIZONTAL);
+        picker.setMaxShowSize(7);
+        picker.setOrientation(RecyclerWheelPicker.HORIZONTAL);
         picker.setSelectedAreaHeight(100);
         picker.setAdapter(new TextViewWheelAdapter<String>() {
             @Override
@@ -66,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 .setView(picker).create().show();
     }
 
-    private RecyclerWheelPicker<String> createTextPickerSimple(){
+    private RecyclerWheelPicker<String> createTextPickerSimple() {
         RecyclerWheelPicker<String> picker = new RecyclerWheelPicker(this);
         picker.setMaxShowSize(7);
         picker.setOrientation(RecyclerWheelPicker.HORIZONTAL);
@@ -102,23 +113,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void textPicker_BottomSheet(View v) {
-        RecyclerWheelPicker<String> picker0=createTextPickerSimple();
-        RecyclerWheelPicker<String> picker1=createTextPickerSimple();
-        LinearLayout linearLayout=new LinearLayout(this);
+    public void textPicker_BottomSheetDialog(final View v) {
+        RecyclerWheelPicker<String> picker0 = createTextPickerSimple();
+        RecyclerWheelPicker<String> picker1 = createTextPickerSimple();
+        LinearLayout rootLayout = new LinearLayout(this);
+        LinearLayoutX linearLayout = new LinearLayoutX(this);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.addView(picker0,new LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.WRAP_CONTENT){
+        linearLayout.addView(picker0, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT) {
             {
-                this.weight=1;
+                this.weight = 1;
             }
         });
-        linearLayout.addView(picker1,new LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.WRAP_CONTENT){
+        linearLayout.addView(picker1, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT) {
             {
-                this.weight=1;
+                this.weight = 1;
             }
         });
-        BottomSheetDialog dialog=new BottomSheetDialog(this);
-        dialog.setContentView(linearLayout);
+        rootLayout.addView(new AppCompatTextView(this) {
+                               {
+                                   setText(((Button) v).getText().toString());
+                                   setGravity(Gravity.CENTER);
+                                   setPadding(20,20,20,20);
+                               }
+                           }, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        );
+        rootLayout.addView(linearLayout, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        rootLayout.setOrientation(LinearLayout.VERTICAL);
+
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        dialog.setContentView(rootLayout);
         dialog.show();
 //        new AlertDialog.Builder(this)
 //                .setView(picker).create().show();
@@ -218,4 +241,11 @@ public class MainActivity extends AppCompatActivity {
         toast.show();
     }
 
+    private MyBottomSheetDialogFragment textPickerBottomSheetFragment;
+    public void textPicker_BottomSheetFragment(View view) {
+        if(textPickerBottomSheetFragment==null){
+            textPickerBottomSheetFragment = MyBottomSheetDialogFragment.newInstance(123l);
+        }
+        textPickerBottomSheetFragment.show(getSupportFragmentManager(), "textPicker_BottomSheetFragment");
+    }
 }

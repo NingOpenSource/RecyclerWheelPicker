@@ -25,8 +25,16 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="textPicker_BottomSheet"
+            android:onClick="textPicker_BottomSheetDialog"
             android:text="文本选择器(BottomSheetDialog)"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="textPicker_BottomSheetFragment"
+            android:text="文本选择器(BottomSheetDialogFragment)"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
